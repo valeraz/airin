@@ -41,26 +41,26 @@ import org.gradle.api.Project
 
 abstract class AndroidToolchainFeature : FeatureComponent() {
 
-    var kotlinToolchainVersion by property("1.8")
-    var kotlinJvmTarget by property("11")
+    var kotlinToolchainVersion by property("1.9")
+    var kotlinJvmTarget by property("17")
 
     var androidApiVersion by property(34)
     var androidBuildToolsVersion by property("34.0.0")
 
-    var kotlincVersion by property("1.8.21")
-    var kotlincSha by property("6e43c5569ad067492d04d92c28cdf8095673699d81ce460bd7270443297e8fd7")
+    var kotlincVersion by property("1.9.22")
+    var kotlincSha by property("88b39213506532c816ff56348c07bbeefe0c8d18943bffbad11063cf97cac3e6")
 
-    var rulesJavaVersion by property("6.5.0")
-    var rulesJavaSha by property("160d1ebf33763124766fb35316329d907ca67f733238aa47624a8e3ff3cf2ef4")
+    var rulesJavaVersion by property("7.4.0")
+    var rulesJavaSha by property("976ef08b49c929741f201790e59e3807c72ad81f428c8bc953cdbeff5fed15eb")
 
     var rulesJvmExternalVersion by property("4.5")
     var rulesJvmExternalSha by property("b17d7388feb9bfa7f2fa09031b32707df529f26c91ab9e5d909eb1676badd9a6")
 
-    var rulesKotlinVersion by property("1.8.1")
-    var rulesKotlinSha by property("a630cda9fdb4f56cf2dc20a4bf873765c41cf00e9379e8d59cd07b24730f4fde")
+    var rulesKotlinVersion by property("1.9.0")
+    var rulesKotlinSha by property("5766f1e599acf551aa56f49dab9ab9108269b03c557496c54acaf41f98e2b8d6")
 
     var rulesAndroidVersion by property("0.1.1")
-    var rulesAndroidSha by property("cd06d15dd8bb59926e4d65f9003bfc20f9da4b2519985c27e190cddc8b7a7806")
+    var rulesAndroidSha by property("b75a673a66c157138ab53f4d8612a6e655d38b69bb14207c1a6675f0e10afa61")
 
     var allowedRepositories by property(
         mutableListOf(
@@ -118,9 +118,9 @@ abstract class AndroidToolchainFeature : FeatureComponent() {
             val RULES_KOTLIN_SHA by rulesKotlinSha
 
             http_archive(
-                name = "io_bazel_rules_kotlin",
+                name = "rules_kotlin",
                 sha256 = RULES_KOTLIN_SHA,
-                urls = list["https://github.com/bazelbuild/rules_kotlin/releases/download/v%s/rules_kotlin_release.tgz" `%` RULES_KOTLIN_VERSION],
+                urls = list["https://github.com/bazelbuild/rules_kotlin/releases/download/v%s/rules_kotlin_release.tgz".format(RULES_KOTLIN_VERSION)],
             )
 
             load(
