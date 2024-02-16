@@ -121,7 +121,15 @@ class DefaultProjectTransformer(
             .mapValues { (_, dependencies) ->
                 dependencies.mapNotNull {
                     when (it) {
-                        is ExternalDependency -> MavenCoordinates(it.group!!, it.name, it.version)
+                        is ExternalDependency -> {
+                            // Fixme: Some deps here return null for it.version
+                            // See discussion on why over here: https://slack-pde.slack.com/archives/C06CSBC0WQ6/p1708023626165279?thread_ts=1707846201.338679&cid=C06CSBC0WQ6
+                            // A simple fix would be to look up the version from the libs.versions.toml slack-android-ng (ideally we'd get that dynamically using gradle apis).
+                            // Alternatively: a quick and dirty approach would be to statically reference it from slack-android-ng/gradle/libs.versions.toml... it's not like it's going to move any time soon
+                            // Zac's suggestion for a proper fix was to look up deps from project.configurations. It tried for a bit, but didn't manage to figure it out due to my limited knowledge of gradle
+                            println("VSZ External Dep: ${it.group}, ${it.name}, ${it.version}")
+                            MavenCoordinates(it.group, it.name, it.version)
+                        }
                         is ProjectDependency -> with(it.dependencyProject) {
                             GradleLabel(path = path, name = name)
                         }
