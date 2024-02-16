@@ -34,4 +34,4 @@ include(
     "airin-gradle-android"
 )
 
-includeBuild("samples/simple-android")
+//includeBuild("samples/simple-android")

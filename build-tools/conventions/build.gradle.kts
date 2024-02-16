@@ -13,6 +13,12 @@ dependencies {
     compileOnly(sampleLibs.gradlePlugin.android.api)
 }
 
+kotlin {
+    kotlinDslPluginOptions {
+        jvmToolchain(21)
+    }
+}
+
 gradlePlugin {
     plugins {
         val airinMetadata by registering {
