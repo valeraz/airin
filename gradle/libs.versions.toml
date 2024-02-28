@@ -2,7 +2,7 @@
 pendant = "0.5.2"
 kotlin = "1.9.22"
 kotlinCompat = "1.7.21"
-agp = "7.3.1"
+agp = "8.2.2"
 mavenPublish = "0.25.3"
 dokka = "1.9.0"
 airinConventionPlugin = "ignored"

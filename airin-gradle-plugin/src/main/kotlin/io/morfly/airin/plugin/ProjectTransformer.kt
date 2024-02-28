@@ -16,6 +16,8 @@
 
 package io.morfly.airin.plugin
 
+import com.android.build.gradle.internal.publishing.AndroidArtifacts
+import com.android.build.gradle.internal.publishing.AndroidArtifacts.ArtifactType
 import io.morfly.airin.ComponentConflictResolution
 import io.morfly.airin.ComponentId
 import io.morfly.airin.ConfigurationName
@@ -30,7 +32,16 @@ import io.morfly.airin.label.Label
 import io.morfly.airin.label.MavenCoordinates
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ExternalDependency
+import org.gradle.api.artifacts.MinimalExternalModuleDependency
 import org.gradle.api.artifacts.ProjectDependency
+import org.gradle.api.artifacts.VersionCatalog
+import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.internal.impldep.org.eclipse.jgit.lib.RepositoryCache.FileKey.lenient
+import org.gradle.kotlin.dsl.getByType
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.provider.MapProperty
+import org.gradle.internal.component.external.model.ModuleComponentArtifactIdentifier
 
 data class ModuleConfiguration(
     val module: GradleModule,
@@ -62,6 +73,12 @@ class DefaultProjectTransformer(
             if (packageComponent == null) emptyList()
             else project.pickFeatureComponents(packageComponent)
 
+        val versionsFromConfigs = mutableMapOf<String, String>()
+        // Not sure whether this is the right set of filters, but it works so far
+        project.configurations.filter { it.name.endsWith("DependenciesMetadata") && ! it.name.contains("test") } .forEach {
+            versionsFromConfigs.putAll(getIdentifiersToVersions(it))
+        }
+
         val module = GradleModule(
             name = project.name,
             isRoot = project.rootProject.path == project.path,
@@ -70,7 +87,7 @@ class DefaultProjectTransformer(
             relativeDirPath = project.projectDir.relativeTo(project.rootDir).path,
             moduleComponentId = packageComponent?.id,
             featureComponentIds = featureComponents.map { it.id }.toSet(),
-            originalDependencies = project.prepareDependencies()
+            originalDependencies = project.prepareDependencies(versionsFromConfigs)
         )
         with(decorator) {
             module.decorate(project)
@@ -82,6 +99,32 @@ class DefaultProjectTransformer(
         )
         cache[project.path] = config
         return config
+    }
+
+protected fun getIdentifiersToVersions(configuration: Configuration): Map<String, String> {
+    return configuration.incoming
+        .artifactView {
+            attributes { attribute(AndroidArtifacts.ARTIFACT_TYPE, ArtifactType.AAR_OR_JAR.type) }
+            lenient(true)
+            // Only resolve external dependencies! Without this, all project dependencies will get
+            // _compiled_.
+            componentFilter { id -> id is ModuleComponentIdentifier }
+        }
+        .artifacts
+        .resolvedArtifacts
+        // We _must_ map this here, can't defer to the task action because of
+        // https://github.com/gradle/gradle/issues/20785
+        .map { result ->
+            result
+                .asSequence()
+                .map { it.id }
+                .filterIsInstance<ModuleComponentArtifactIdentifier>()
+                .associate { component ->
+                    val componentId = component.componentIdentifier
+                    val identifier = "${componentId.group}:${componentId.module}"
+                    identifier to componentId.version
+                }
+        }.get()
     }
 
     private fun Project.pickPackageComponent(
@@ -115,22 +158,20 @@ class DefaultProjectTransformer(
         .filter { !it.ignored }
         .filter { it.canProcess(this) }
 
-    private fun Project.prepareDependencies(): Map<ConfigurationName, List<Label>> =
+    // libsFromCatalog: Map<String, String>
+    private fun Project.prepareDependencies(versionsFromConfiguration: Map<String, String>): Map<ConfigurationName, List<Label>> =
         artifactCollector
             .invoke(this)
             .mapValues { (_, dependencies) ->
-                dependencies.mapNotNull {
-                    when (it) {
+                dependencies.mapNotNull { dep ->
+                    when (dep) {
                         is ExternalDependency -> {
-                            // Fixme: Some deps here return null for it.version
-                            // See discussion on why over here: https://slack-pde.slack.com/archives/C06CSBC0WQ6/p1708023626165279?thread_ts=1707846201.338679&cid=C06CSBC0WQ6
-                            // A simple fix would be to look up the version from the libs.versions.toml slack-android-ng (ideally we'd get that dynamically using gradle apis).
-                            // Alternatively: a quick and dirty approach would be to statically reference it from slack-android-ng/gradle/libs.versions.toml... it's not like it's going to move any time soon
-                            // Zac's suggestion for a proper fix was to look up deps from project.configurations. It tried for a bit, but didn't manage to figure it out due to my limited knowledge of gradle
-                            println("VSZ External Dep: ${it.group}, ${it.name}, ${it.version}")
-                            MavenCoordinates(it.group, it.name, it.version)
+                            // Some dependency versions are configured by the platform-tools project and are not available via the
+                            // standard gradle api.
+                            val version = if (dep.version != null) dep.version else versionsFromConfiguration["${dep.group}:${dep.name}"]
+                            MavenCoordinates(dep.group, dep.name, version)
                         }
-                        is ProjectDependency -> with(it.dependencyProject) {
+                        is ProjectDependency -> with(dep.dependencyProject) {
                             GradleLabel(path = path, name = name)
                         }
 

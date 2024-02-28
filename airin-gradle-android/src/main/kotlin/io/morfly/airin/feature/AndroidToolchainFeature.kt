@@ -42,7 +42,7 @@ import org.gradle.api.Project
 abstract class AndroidToolchainFeature : FeatureComponent() {
 
     var kotlinToolchainVersion by property("1.9")
-    var kotlinJvmTarget by property("17")
+    var kotlinJvmTarget by property("21")
 
     var androidApiVersion by property(34)
     var androidBuildToolsVersion by property("34.0.0")

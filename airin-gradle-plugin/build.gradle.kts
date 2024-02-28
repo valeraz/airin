@@ -18,7 +18,9 @@ tasks.withType<KotlinCompile>().configureEach {
 
 dependencies {
     api(projects.airinCore)
-
     api(libs.pendant.starlark)
     api(libs.pendant.library.bazel)
+
+    compileOnly(libs.gradlePlugin.android.api)
+    compileOnly(libs.gradlePlugin.android)
 }
