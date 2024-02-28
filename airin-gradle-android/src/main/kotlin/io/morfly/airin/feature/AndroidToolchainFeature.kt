@@ -75,7 +75,7 @@ abstract class AndroidToolchainFeature : FeatureComponent() {
     override fun FeatureContext.onInvoke(module: GradleModule) {
 
         onContext<BuildContext>(id = RootModule.ID_BUILD) {
-            load("@io_bazel_rules_kotlin//kotlin:core.bzl", "define_kt_toolchain")
+            load("@rules_kotlin//kotlin:core.bzl", "define_kt_toolchain")
 
             val KOTLIN_VERSION by kotlinToolchainVersion
             val JAVA_VERSION by kotlinJvmTarget
@@ -124,7 +124,7 @@ abstract class AndroidToolchainFeature : FeatureComponent() {
             )
 
             load(
-                "@io_bazel_rules_kotlin//kotlin:repositories.bzl",
+                "@rules_kotlin//kotlin:repositories.bzl",
                 "kotlin_repositories",
                 "kotlinc_version",
             )

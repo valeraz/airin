@@ -42,17 +42,17 @@ abstract class AndroidLibraryModule : ModuleComponent() {
         val build = BUILD.bazel {
             _id = ID_BUILD
 
-            load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+            load("@rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
             kt_android_library {
                 _id = ID_BUILD_TARGET_CALL
 
                 name = module.name
-                srcs = glob("src/main/**/*.kt")
+                srcs = glob("src/**/*.kt")
                 custom_package = module.androidMetadata?.packageName
                 manifest = "src/main/AndroidManifest.xml"
                 resource_files = glob("src/main/res/**")
-                visibility = list["//visibility:public"]
+//                visibility = list["//visibility:public"]
 
                 for ((config, deps) in module.dependencies) {
                     config `=` deps.map { it.asBazelLabel().toString() }

@@ -38,8 +38,8 @@ abstract class ParcelizeFeature : FeatureComponent() {
     override fun FeatureContext.onInvoke(module: GradleModule) {
         onContext<BuildContext>(id = RootModule.ID_THIRD_PARTY_BUILD) {
 
-            load("@io_bazel_rules_kotlin//kotlin:core.bzl", "kt_compiler_plugin")
-            load("@io_bazel_rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
+            load("@rules_kotlin//kotlin:core.bzl", "kt_compiler_plugin")
+            load("@rules_kotlin//kotlin:jvm.bzl", "kt_jvm_library")
 
             kt_compiler_plugin(
                 name = "parcelize_plugin",

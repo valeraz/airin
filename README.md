@@ -152,7 +152,7 @@ The actual content of a generated Starlark file is built using [Pendant](https:/
 ```kotlin
 override fun ModuleContext.onInvoke(module: GradleModule) {
   val file = BUILD.bazel {
-    load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+    load("@rules_kotlin//kotlin:android.bzl", "kt_android_library")
   
     kt_android_library {
       name = module.name
@@ -291,7 +291,7 @@ Let’s revisit the code snippet from the `AndroidLibraryModule` component that 
 val file = BUILD.bazel {
   _id = "build_file"
 
-  load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+  load("@rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
   kt_android_library {
     _id = "android_library_target"
@@ -326,7 +326,7 @@ onContext<KtAndroidLibraryContext>(id = "android_library_target") {
 As a result, when the `AndroidLibraryModule` component is invoked, it will incorporate all the modifications, including the added `enable_data_binding` argument, as well as the top-level `package` function call.
 
 ```python
-load("@io_bazel_rules_kotlin//kotlin:android.bzl", "kt_android_library")
+load("@rules_kotlin//kotlin:android.bzl", "kt_android_library")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 
 kt_android_library(
