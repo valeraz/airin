@@ -46,7 +46,7 @@ abstract class ParcelizeFeature : FeatureComponent() {
                 compile_phase = True,
                 id = "org.jetbrains.kotlin.parcelize",
                 stubs_phase = True,
-                deps = list["@com_github_jetbrains_kotlin//:parcelize-compiler-plugin"],
+                deps = list["@rules_kotlin//kotlin/compiler:parcelize-compiler-plugin"],
             )
 
             kt_jvm_library(
@@ -55,7 +55,7 @@ abstract class ParcelizeFeature : FeatureComponent() {
                 exported_compiler_plugins = list[":parcelize_plugin"],
                 plugins = list[":parcelize_plugin"],
                 visibility = list["//visibility:public"],
-                exports = list["@com_github_jetbrains_kotlin//:parcelize-runtime"],
+                exports = list["@rules_kotlin//kotlin/compiler:parcelize-runtime"],
             )
         }
 
