@@ -87,7 +87,7 @@ class DefaultProjectTransformer(
             relativeDirPath = project.projectDir.relativeTo(project.rootDir).path,
             moduleComponentId = packageComponent?.id,
             featureComponentIds = featureComponents.map { it.id }.toSet(),
-            originalDependencies = project.prepareDependencies(versionsFromConfigs)
+            originalDependencies = project.prepareDependencies(versionsFromConfigs, properties.skippedProjects)
         )
         with(decorator) {
             module.decorate(project)
@@ -159,11 +159,13 @@ protected fun getIdentifiersToVersions(configuration: Configuration): Map<String
         .filter { it.canProcess(this) }
 
     // libsFromCatalog: Map<String, String>
-    private fun Project.prepareDependencies(versionsFromConfiguration: Map<String, String>): Map<ConfigurationName, List<Label>> =
+    private fun Project.prepareDependencies(versionsFromConfiguration: Map<String, String>, skippedProjects: Set<String>): Map<ConfigurationName, List<Label>> =
         artifactCollector
             .invoke(this)
             .mapValues { (_, dependencies) ->
-                dependencies.mapNotNull { dep ->
+                dependencies.filter {
+                    (it is ExternalDependency && !it.name.endsWith("bom")) || (it is ProjectDependency && !skippedProjects.contains(it.dependencyProject.path))
+                }.mapNotNull { dep ->
                     when (dep) {
                         is ExternalDependency -> {
                             // Some dependency versions are configured by the platform-tools project and are not available via the
