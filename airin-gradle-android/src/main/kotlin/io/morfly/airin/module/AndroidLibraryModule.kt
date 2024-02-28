@@ -51,8 +51,8 @@ abstract class AndroidLibraryModule : ModuleComponent() {
                 srcs = glob("src/**/*.kt")
                 custom_package = module.androidMetadata?.packageName
                 manifest = "src/main/AndroidManifest.xml"
-                resource_files = glob("src/main/res/**")
-//                visibility = list["//visibility:public"]
+                resource_files = glob("src/main/res/**", allow_empty = True) // we have android libs without resources. Setting allow_empty as a workaround for now.
+                visibility = list["//visibility:public"]
 
                 for ((config, deps) in module.dependencies) {
                     config `=` deps.map { it.asBazelLabel().toString() }
