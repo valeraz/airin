@@ -33,8 +33,8 @@ import org.gradle.api.Project
 
 abstract class DaggerAndroidFeature : FeatureComponent() {
 
-    val daggerVersion by property("2.47")
-    val daggerSha by property("154cdfa4f6f552a9873e2b4448f7a80415cb3427c4c771a50c6a8a8b434ffd0a")
+    val daggerVersion by property("2.51")
+    val daggerSha by property("de18b83a7b8ca43f5ab604d41228e11805ee5c0e4aa229d3e692addd994e6ff8")
 
     override fun canProcess(project: Project): Boolean = true
 

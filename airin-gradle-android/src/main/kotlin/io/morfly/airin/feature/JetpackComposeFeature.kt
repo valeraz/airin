@@ -58,7 +58,7 @@ abstract class JetpackComposeFeature : FeatureComponent() {
         }
 
         onContext<ListContext<StringType>>(id = ID_MAVEN_ARTIFACTS) {
-            item("androidx.compose.compiler:compiler:1.4.7")
+            item("androidx.compose.compiler:compiler:1.5.10") // this version should be set dynamically
         }
 
         onContext<KtAndroidLibraryContext>(AndroidLibraryModule.ID_BUILD_TARGET_CALL) {
