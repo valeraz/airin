@@ -42,17 +42,18 @@ abstract class RootModule : ModuleComponent() {
         project.plugins.hasPlugin("io.morfly.airin.android")
 
     override fun ModuleContext.onInvoke(module: GradleModule) {
-        val build = BUILD.bazel {
-            _id = ID_BUILD
-        }
-
-        val workspace = WORKSPACE {
-            _id = ID_WORKSPACE
-
-            workspace(name = module.name)
-
-            load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-        }
+        // Disable the modification of root BUILD.bazel and WORKSPACE, but leave third_party build
+//        val build = BUILD.bazel {
+//            _id = ID_BUILD
+//        }
+//
+//        val workspace = WORKSPACE {
+//            _id = ID_WORKSPACE
+//
+//            workspace(name = module.name)
+//
+//            load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+//        }
 
         val mavenDependencies = "maven_dependencies".bzl {
             _id = ID_MAVEN_DEPENDENCIES_BZL
@@ -73,7 +74,7 @@ abstract class RootModule : ModuleComponent() {
             load("@rules_jvm_external//:defs.bzl", "artifact")
         }
 
-        generate(build, workspace)
+//        generate(build, workspace)
         generate(thirdPartyBuild, mavenDependencies, relativeDirPath = "third_party")
     }
 
