@@ -44,11 +44,13 @@ abstract class AndroidLibraryModule : ModuleComponent() {
 
             load("@rules_kotlin//kotlin:android.bzl", "kt_android_library")
 
+            val src = if (module.name == "l10n-strings") list() else glob("src/**/*.kt")
+
             kt_android_library {
                 _id = ID_BUILD_TARGET_CALL
 
                 name = module.name
-                srcs = glob("src/**/*.kt")
+                srcs = src
                 custom_package = module.androidMetadata?.packageName
                 manifest = "src/main/AndroidManifest.xml"
                 resource_files = glob("src/main/res/**", allow_empty = True) // we have android libs without resources. Setting allow_empty as a workaround for now.
