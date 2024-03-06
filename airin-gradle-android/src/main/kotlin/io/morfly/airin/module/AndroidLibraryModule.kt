@@ -42,19 +42,14 @@ abstract class AndroidLibraryModule : ModuleComponent() {
         val build = BUILD.bazel {
             _id = ID_BUILD
 
-            load("@rules_kotlin//kotlin:android.bzl", "kt_android_library")
-
-            val src = if (module.name == "l10n-strings") list() else glob("src/**/*.kt")
+            load("//bazel/macros:module.bzl", "slack_android_library")
 
             kt_android_library {
                 _id = ID_BUILD_TARGET_CALL
 
                 name = module.name
-                srcs = src
                 custom_package = module.androidMetadata?.packageName
-                manifest = "src/main/AndroidManifest.xml"
                 resource_files = glob("src/main/res/**", allow_empty = True) // we have android libs without resources. Setting allow_empty as a workaround for now.
-                visibility = list["//visibility:public"]
 
                 for ((config, deps) in module.dependencies) {
                     config `=` deps.map { it.asBazelLabel().toString() }
