@@ -42,7 +42,7 @@ abstract class AndroidLibraryModule : ModuleComponent() {
         val build = BUILD.bazel {
             _id = ID_BUILD
 
-            load("//bazel/macros:module.bzl", "slack_android_library")
+            load("//bazel/macros:module.bzl", "kt_android_library")
 
             kt_android_library {
                 _id = ID_BUILD_TARGET_CALL
