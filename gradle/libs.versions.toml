@@ -1,6 +1,6 @@
 [versions]
 pendant = "0.5.2"
-kotlin = "1.9.22"
+kotlin = "1.9.20"
 kotlinCompat = "1.7.21"
 agp = "8.2.2"
 mavenPublish = "0.25.3"
