@@ -45,9 +45,8 @@ abstract class ArtifactMappingFeature : FeatureComponent() {
         }
 
         onDependency(MavenCoordinates("org.jetbrains.kotlin", "kotlin-bom")) {}
-
         onDependency(MavenCoordinates("org.jetbrains.kotlin", "kotlin-stdlib-jdk8")) {}
-
+        onDependency(MavenCoordinates("org.jetbrains.kotlin", "kotlin-stdlib")) {}
         onDependency(MavenCoordinates("androidx.compose", "compose-bom")) {}
     }
 }
