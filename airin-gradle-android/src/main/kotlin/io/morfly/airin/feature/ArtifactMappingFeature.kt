@@ -33,6 +33,7 @@ abstract class ArtifactMappingFeature : FeatureComponent() {
 
         onConfiguration("api") {
             overrideWith("exports")
+            overrideWith("deps")
         }
 
         onConfiguration("kapt") {
