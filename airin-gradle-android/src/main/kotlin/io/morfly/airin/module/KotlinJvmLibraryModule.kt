@@ -33,7 +33,7 @@ abstract class KotlinJvmLibraryModule : ModuleComponent() {
                     name = module.name
 
                     for ((config, deps) in module.dependencies) {
-                        config `=` deps.map { it.asBazelLabel().toString() }
+                        config `=` deps.map { it.asBazelLabel().toString() }.distinct()
                     }
                 }
             }
