@@ -36,6 +36,10 @@ abstract class ArtifactMappingFeature : FeatureComponent() {
             overrideWith("deps")
         }
 
+        onConfiguration("compileOnly") {
+            overrideWith("deps")
+        }
+
         onConfiguration("kapt") {
             overrideWith("plugins")
         }
