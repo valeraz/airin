@@ -49,6 +49,7 @@ abstract class AndroidLibraryModule : ModuleComponent() {
 
                 name = module.name
                 custom_package = module.androidMetadata?.packageName
+                resource_files = glob("src/main/res/**", allow_empty = True) // we have android libs without resources. Setting allow_empty as a workaround for now.
 
                 for ((config, deps) in module.dependencies) {
                     config `=` deps.map { it.asBazelLabel().toString() }.distinct()
