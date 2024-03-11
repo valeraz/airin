@@ -51,7 +51,7 @@ abstract class AndroidLibraryModule : ModuleComponent() {
                 custom_package = module.androidMetadata?.packageName
 
                 for ((config, deps) in module.dependencies) {
-                    config `=` deps.map { it.asBazelLabel().toString() }
+                    config `=` deps.map { it.asBazelLabel().toString() }.distinct()
                 }
             }
         }
