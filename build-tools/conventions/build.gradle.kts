@@ -15,7 +15,7 @@ dependencies {
 
 kotlin {
     kotlinDslPluginOptions {
-        jvmToolchain(21)
+        jvmToolchain(17)
     }
 }
 
